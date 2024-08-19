@@ -1,3 +1,6 @@
+/**
+ * Fetches GitHub user data and populates a table with the results.
+ */
 const usernamesTextarea = document.getElementById('usernames');
 const fetchButton = document.getElementById('fetchButton');
 const resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
@@ -8,45 +11,52 @@ fetchButton.addEventListener('click', () => {
     resultsTable.innerHTML = ''; // Clear previous results
 
     usernames.forEach((username, index) => {
+        const newRow = resultsTable.insertRow();
+
         // Fetch user data
-        fetch(`https://api.github.com/users/${username}`)
-            .then(response => response.json())
-            .then(userData => {
-                // Introduce a delay before fetching repository data
-                setTimeout(() => {
-                    fetch(`https://api.github.com/users/${username}/repos`)
-                        .then(response => response.json())
-                        .then(reposData => {
-                            let totalStars = 0;
-                            let totalForks = 0;
-                            reposData.forEach(repo => {
-                                totalStars += repo.stargazers_count;
-                                totalForks += repo.forks_count;
-                            });
+        Promise.all([
+            fetch(`https://api.github.com/users/${username}`).then(response => response.json()),
+            fetch(`https://api.github.com/users/${username}/repos`).then(response => response.json()),
+            fetch(`https://api.github.com/users/${username}/orgs`).then(response => response.json())
+        ])
+            .then(([userData, reposData, orgsData]) => {
+                const cells = [
+                    userData.login,
+                    userData.name,
+                    userData.company,
+                    userData.blog,
+                    userData.bio,
+                    userData.public_repos,
+                    userData.followers
+                ];
 
-                            const newRow = resultsTable.insertRow();
-                            const cells = [
-                                userData.login,
-                                totalStars,
-                                totalForks,
-                                userData.public_repos,
-                                userData.followers
-                            ];
+                // Calculate total stars and forks
+                const { totalStars, totalForks } = reposData.reduce(
+                    (acc, repo) => ({
+                        totalStars: acc.totalStars + repo.stargazers_count,
+                        totalForks: acc.totalForks + repo.forks_count
+                    }),
+                    { totalStars: 0, totalForks: 0 }
+                );
 
-                            cells.forEach(cellData => {
-                                const newCell = newRow.insertCell();
-                                newCell.textContent = cellData;
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error fetching repository data:', error);
-                            // Handle repository fetch errors (e.g., display an error message)
-                        });
-                }, index * 1000); // Delay based on the index of the username
+                cells.push(totalStars, totalForks);
+
+                // Get the list of organizations
+                const organizations = orgsData.map(org => org.login);
+                cells.push(organizations.join(', '));
+
+                // Populate the table row with data
+                cells.forEach(cellData => {
+                    const newCell = newRow.insertCell();
+                    newCell.textContent = cellData;
+                });
             })
             .catch(error => {
-                console.error('Error fetching user data:', error);
-                // Handle user fetch errors (e.g., display an error message)
+                console.error('Error fetching data:', error);
+                // Handle fetch errors (e.g., display an error message)
+                const errorCell = newRow.insertCell();
+                errorCell.textContent = 'Error fetching data';
+                errorCell.colSpan = 10;
             });
     });
 });
