@@ -3,7 +3,7 @@ body {
 }
 
 .container {
-    max-width: 800px; /* Adjust as needed */
+    max-width: 1400px;
     margin: 20px auto;
     padding: 20px;
 }
@@ -12,43 +12,79 @@ textarea {
     width: 100%;
     height: 100px;
     margin-bottom: 10px;
-    box-sizing: border-box; /* Include padding and border in the total width */
+    box-sizing: border-box;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; /* Prevent table from expanding beyond container */
+    table-layout: auto;
 }
 
 th, td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px;
     text-align: left;
-    overflow: hidden; /* Hide overflow text */
-    text-overflow: ellipsis; /* Add ellipsis (...) for long text */
-    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
 }
 
 th {
     background-color: #f2f2f2;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #e9e9e9;
+}
+
+td:first-child {
+    font-weight: bold;
+}
+
+td:last-child {
+    text-align: center;
 }
 
 /* Media Queries for Responsiveness */
-@media (max-width: 600px) {
+@media (max-width: 1200px) {
+    th, td {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 992px) {
+    th, td {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 768px) {
     .container {
         padding: 10px;
     }
 
+    table {
+        table-layout: auto;
+    }
+
     th, td {
-        font-size: 14px; /* Reduce font size on smaller screens */
+        font-size: 12px;
         padding: 6px;
+        white-space: normal;
     }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 576px) {
     th, td {
-        font-size: 12px;
+        font-size: 10px;
         padding: 4px;
     }
 }
