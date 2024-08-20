@@ -6,7 +6,7 @@ const fetchButton = document.getElementById('fetchButton');
 const submitButton = document.getElementById('submitButton');
 const selectedUsernamesField = document.getElementById('selectedUsernames');
 const resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
-const token = document.getElementById('auth').value
+const token = document.getElementById('auth')
 
 fetchButton.addEventListener('click', async () => {
     const usernames = usernamesTextarea.value.split(',').map(username => username.trim());
@@ -28,12 +28,20 @@ fetchButton.addEventListener('click', async () => {
         checkboxCell.appendChild(checkbox); // Insert checkbox into the row
 
         // Fetch user data
-        var options = {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`, // notice the Bearer before your token
-            },
-        };
+
+        let options = {}
+        if (token.value) {
+            options = {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token.value}`, // notice the Bearer before your token
+                },
+            };
+        } else {
+            options = {
+                method: 'GET',
+            };
+        }
 
         Promise.all([
             fetch(`https://api.github.com/users/${username}`, options).then(response => response.json()),
@@ -59,15 +67,15 @@ fetchButton.addEventListener('click', async () => {
                     }),
                     { totalStars: 0, totalForks: 0 }
                 );
-
                 cells.push(totalStars, totalForks);
+
 
                 // Get the list of organizations
                 const organizations = orgsData.map(org => org.login);
                 cells.push(organizations.join(', '));
 
                 await new Promise(r => setTimeout(r, 2000));
-                
+
                 // Populate the table row with data
                 cells.forEach(cellData => {
                     const newCell = newRow.insertCell();
@@ -76,7 +84,7 @@ fetchButton.addEventListener('click', async () => {
 
                 index++;
 
-                setTimeout(fetchNextUser, 500); // Fetch the next user after a delay of 1 second
+                setTimeout(fetchNextUser, 1000); // Fetch the next user after a delay of 1 second
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
@@ -86,7 +94,7 @@ fetchButton.addEventListener('click', async () => {
                 errorCell.colSpan = 10;
 
                 index++;
-                setTimeout(fetchNextUser, 500); // Fetch the next user after a delay of 1 second
+                setTimeout(fetchNextUser, 1000); // Fetch the next user after a delay of 1 second
             });
     };
 
