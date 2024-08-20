@@ -4,6 +4,8 @@ This simple tool allows you to quickly fetch and display information about multi
 
 It's a handy tool for quickly checking the GitHub profiles of multiple users.
 
+![](https://github.com/user-attachments/assets/93a6c020-2925-4c33-91d2-2bbc0485ac6a)
+
 ## Features
 
 *   **Fetches data from the GitHub API:** Retrieves user information such as bio, repository count, orgs, links and more.
