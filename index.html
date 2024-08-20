@@ -9,10 +9,12 @@
     <div class="container"> 
         <h1>$ Whoami</h1>
         <textarea id="usernames" placeholder="Enter comma-separated GitHub usernames" required="true" ></textarea>
+        <textarea id="auth" placeholder="Enter auth token to avoid rate limit"></textarea>
         <button id="fetchButton">Fetch GitHub Profiles</button>
         <table id="resultsTable">
             <thead>
                 <tr>
+                    <th>Selected</th>
                     <th>Username</th>
                     <th>Name</th>
                     <th>Company</th>
@@ -28,6 +30,9 @@
             <tbody>
             </tbody>
         </table>
+        <br>
+        <button id="submitButton">Select GitHub Profiles</button>
+        <p id="selectedUsernames"></p>
     </div>
     <script src="script.js"></script>
 </body>
